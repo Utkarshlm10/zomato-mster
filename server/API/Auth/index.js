@@ -1,25 +1,28 @@
-//Library
+// Library
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 
-//Models
-import { UserModel }from "../../database/user";
+// Models
+import { UserModel } from "../../database/user";
 
+// validation
+import { ValidateSignup, ValidateSignin } from "../../validation/auth";
 
 const Router = express.Router();
 
 /*
-Route/ signup
-Des Signup with email and password
-Params node
-Access Public
-Method POST
+Route     /signup
+Des       Register new user
+Params    none
+Access    Public
+Method    POST  
 */
-
 Router.post("/signup", async (req, res) => {
   try {
+    await ValidateSignup(req.body.credentials);
+
     await UserModel.findByEmailAndPhone(req.body.credentials);
     const newUser = await UserModel.create(req.body.credentials);
     const token = newUser.generateJwtToken();
@@ -38,6 +41,8 @@ Method    POST
 */
 Router.post("/signin", async (req, res) => {
   try {
+    await ValidateSignin(req.body.credentials);
+
     const user = await UserModel.findByEmailAndPassword(req.body.credentials);
 
     const token = user.generateJwtToken();
@@ -75,7 +80,9 @@ Router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/" }),
   (req, res) => {
-    return res.json({ token: req.session.passport.user.token });
+    return res.redirect(
+      `http://localhost:3000/google/${req.session.passport.user.token}`
+    );
   }
 );
 

@@ -17,7 +17,7 @@ Method    GET
 Router.get("/list/:_id", async (req, res) => {
   try {
     const { _id } = req.params;
-    const menus = await MenuModel.findOne(_id);
+    const menus = await MenuModel.findById(_id);
 
     return res.json({ menus });
   } catch (error) {
@@ -42,3 +42,5 @@ Router.get("/image/:_id", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
+
+export default Router;
