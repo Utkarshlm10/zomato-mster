@@ -20,6 +20,8 @@ import Order from "./API/orders";
 import Reviews from "./API/reviews";
 import User from "./API/User";
 import Menu from "./API/menu";
+import MailService from "./API/Mail";
+import Payments from "./API/Payments";
 
 // Database coonections
 import ConnectDB from "./database/connection";
@@ -43,20 +45,23 @@ routeConfig(passport);
 // Application Routes
 zomato.use("/auth", Auth);
 zomato.use("/restaurant", Restaurant);
-zomato.use("/food", Food);
+zomato.use("/foods", Food);
 zomato.use("/image", Image);
 zomato.use("/order", Order);
 zomato.use("/reviews", Reviews);
 zomato.use("/user", User);
 zomato.use("/menu", Menu);
+zomato.use("/mail", MailService);
+zomato.use("/payments", Payments);
+
 
 zomato.get("/", (req, res) => res.json({ message: "Setup sucess"}));
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 2004;
 
-zomato.listen(4000, () =>
+zomato.listen(port, () =>
   ConnectDB()
-    .then(() => console.log("Server is running "))
+    .then(() => console.log("Server is running 🚀"))
     .catch(() =>
       console.log("Server is running, but database connection failed... ")
     )

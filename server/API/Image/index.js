@@ -7,7 +7,7 @@ import multer from "multer";
 import { ImageModel } from "../../database/allModels";
 
 // Utilities
-import { s3Upload } from "../../Utils/AWS/s3";
+import { s3Upload } from "../../Utils/s3";
 
 const Router = express.Router();
 
@@ -45,7 +45,7 @@ Router.post("/", upload.single("file"), async (req, res) => {
 
     // s3 bucket options
     const bucketOptions = {
-      Bucket: "shapeaijunebatch123",
+      Bucket: "zomatofood",
       Key: file.originalname,
       Body: file.buffer,
       ContentType: file.mimetype,
@@ -53,6 +53,8 @@ Router.post("/", upload.single("file"), async (req, res) => {
     };
 
     const uploadImage = await s3Upload(bucketOptions);
+
+    await ImageModel.create({images : [{location :uploadImage.Location}]});
 
     return res.status(200).json({ uploadImage });
   } catch (error) {
